@@ -80,15 +80,16 @@ export default function Tabslayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: "#1E40AF",
-          tabBarInactiveTintColor: "#64748B",
+          tabBarActiveTintColor: "#FFA500",
+          tabBarInactiveTintColor: "white",
           tabBarStyle: {
             position: "absolute",
-            backgroundColor: "rgba(255,255,255,0.95)",
-            borderTopColor: "rgba(0,0,0,0.1)",
-            borderTopWidth: 1,
+            backgroundColor: "#000000",
+            borderTopColor: "#000000",
+            borderTopWidth: 0,
             height: 60 + insets.bottom,
             paddingBottom: insets.bottom,
+            paddingTop:10,
             elevation: 5,
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 5 },
@@ -102,7 +103,7 @@ export default function Tabslayout() {
           options={{
             title: "Home",
             tabBarIcon: ({ color, size }) => (
-              <Feather name="home" size={24} color={'black'} />
+              <Feather name="home" size={24} color={color} />
             ),
            
           }}
@@ -112,7 +113,7 @@ export default function Tabslayout() {
           options={{
             title: "Playlist",
             tabBarIcon: ({ color, size }) => (
-              <AntDesign name="play" size={24} color={'black'} />
+              <AntDesign name="play" size={24} color={color} />
             ),
           
           }}
@@ -122,7 +123,7 @@ export default function Tabslayout() {
           options={{
             title: "Favorites",
             tabBarIcon: ({ color, size }) => (
-              <MaterialIcons name="favorite" size={24} color={'black'} />
+              <MaterialIcons name="favorite" size={24} color={color} />
             ),
             
           }}
@@ -132,7 +133,7 @@ export default function Tabslayout() {
           options={{
             title: "Profile",
             tabBarIcon: ({ color, size }) => (
-              <FontAwesome name="user-circle-o" size={24} color={'black'}/>
+              <FontAwesome name="user-circle-o" size={24} color={color}/>
             ),
           
           }}
