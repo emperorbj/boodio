@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useAuthStore } from '../../store/useAuthStore';
 import Toast from 'react-native-toast-message';
 import * as Linking from 'expo-linking';
+import PlayerProvider from '../provider/PlayerProvider';
 
 const RootLayout = () => {
     if (typeof global.structuredClone !== 'function') {
@@ -22,8 +23,10 @@ const RootLayout = () => {
 
   return (
     <>
-     <Slot />
-     <Toast />
+    <PlayerProvider>
+      <Slot />
+      <Toast/>
+     </PlayerProvider>
     </>
    
   )

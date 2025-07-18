@@ -8,17 +8,16 @@ import { Ionicons } from '@expo/vector-icons';
 import ProgressBar from '../components/ProgressBar';
 import { useLocalSearchParams } from 'expo-router';
 import { useAudioPlayer,useAudioPlayerStatus } from 'expo-audio';
-
-
-
+import { usePlayer } from '../provider/PlayerProvider';
+import { PlayerTypeProps } from '../../types/data';
 
 const player = () => {
 
-  
-  
   const {id} = useLocalSearchParams()
-  const book = dummyBooks.find((item)=> item.id === id)
-  const player = useAudioPlayer({uri:book?.audio_url})
+  // const book = dummyBooks.find((item)=> item.id === id)
+  
+    const { player,book,setBook } = usePlayer() as PlayerTypeProps
+  // const player = useAudioPlayer({uri:book?.audio_url})
   const playerStatus = useAudioPlayerStatus(player)
 
 

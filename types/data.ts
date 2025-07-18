@@ -42,3 +42,9 @@ export type PlayerStore =  {
   setPlayer: (player: AudioPlayer) => void;
   resetPlayer: () => void;
 }
+
+export type PlayerTypeProps = {
+    player:AudioPlayer;
+    book:any;
+    setBook:(book:any) => void
+}

@@ -3,12 +3,18 @@ import {AntDesign} from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useAudioPlayer,useAudioPlayerStatus } from 'expo-audio';
 import dummyBooks from '../dummyBooks';
+import { usePlayer } from '../provider/PlayerProvider';
+import { PlayerTypeProps } from '../../types/data';
+
 
 const {width} = Dimensions.get('window')
 const FloatPlayer = () => {
-  const book = dummyBooks[0]
-  const player = useAudioPlayer({uri:book?.audio_url})
+  
+  const { player,book,setBook } = usePlayer() as PlayerTypeProps
+  // const player = useAudioPlayer({uri:book?.audio_url})
   const PlayerStatus = useAudioPlayerStatus(player)
+
+  if(!book) return null 
   
   return (
     <View style={styles.container}>
@@ -22,7 +28,7 @@ const FloatPlayer = () => {
         </View>
         <AntDesign
         onPress={()=>PlayerStatus.playing ? player.pause() : player.play()}
-        name={PlayerStatus.playing?"pause" : "playcircleo"} size={24}
+        name={PlayerStatus.isBuffering ? 'loading1' : PlayerStatus.playing?"pause" : "playcircleo"} size={24}
         color={PlayerStatus.playing ? "orange":"gainsboro"} className="text-center mt-4 mr-6"/>
       </Pressable>
       </Link>
