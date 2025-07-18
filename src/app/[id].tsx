@@ -32,7 +32,10 @@ const player = () => {
         <View className='flex-1 items-center gap-6'>
           <Text className='text-2xl text-white mt-6'>{book?.title}</Text>
           <Text className='text-white'>by{" "}{book?.author}</Text>
-          <ProgressBar currentTime={playerStatus.currentTime} duration={playerStatus.duration}/>
+          <ProgressBar
+          onSeek={(seconds:number)=> player.seekTo(seconds)}
+          currentTime={playerStatus.currentTime}
+          duration={playerStatus.duration}/>
 
           <View className='flex-row items-center justify-center gap-10 mt-12'>
             <Ionicons name='play-skip-back' size={24} color={'white'}/>

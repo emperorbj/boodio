@@ -21,4 +21,5 @@ export type AuthState = {
 export type ProgressProps = {
     currentTime : number;
     duration : number;
+    onSeek: (seconds:number)=> void
 }
