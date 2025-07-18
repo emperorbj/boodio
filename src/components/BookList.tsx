@@ -10,7 +10,7 @@ type BookListProps = {
 const BookList = ({book}: BookListProps ) => {
   return (
 
-    <Link href="/player" asChild>
+    <Link href={`/${book.id}`} asChild>
       <Pressable className="flex-row justify-center gap-4">
         <Image source={{uri:book.thumbnail_url}} className="w-20 aspect-square rounded-lg"/>
 

@@ -17,3 +17,8 @@ export type AuthState = {
     signOut: () => Promise<void>;
     checkSession: () => Promise<void>;
 }
+
+export type ProgressProps = {
+    currentTime : number;
+    duration : number;
+}
