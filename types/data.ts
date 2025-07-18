@@ -1,3 +1,4 @@
+import { AudioPlayer } from "expo-audio";
 export type Book = {
     id: string;
     title: string;
@@ -22,4 +23,22 @@ export type ProgressProps = {
     currentTime : number;
     duration : number;
     onSeek: (seconds:number)=> void
+}
+
+export type FloatPlayerProps = {
+    book: Book;
+}
+
+export type BookListProps = {
+    book: Book;
+}
+
+
+
+export type PlayerStore =  {
+  currentBook: Book | null;
+  player: AudioPlayer | null;
+  setCurrentBook: (book: Book) => void;
+  setPlayer: (player: AudioPlayer) => void;
+  resetPlayer: () => void;
 }

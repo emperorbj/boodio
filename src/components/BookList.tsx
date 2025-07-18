@@ -1,11 +1,9 @@
 import {Text, View,Image,Pressable } from 'react-native';
 import {AntDesign} from '@expo/vector-icons';
-import {Book} from '../../types/data';
 import { Link } from 'expo-router';
+import { BookListProps } from '../../types/data';
 
-type BookListProps = {
-    book: Book;
-}
+
 
 const BookList = ({book}: BookListProps ) => {
   return (

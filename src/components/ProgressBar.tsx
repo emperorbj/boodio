@@ -1,11 +1,12 @@
 import { View, Text,Pressable, GestureResponderEvent } from 'react-native'
-import React, { useState,useCallback } from 'react'
+import React, { useState,useCallback,useMemo } from 'react'
 import { ProgressProps } from '../../types/data'
 
 
 const ProgressBar = ({currentTime,duration,onSeek}:ProgressProps) => {
 
-    const value = currentTime/duration
+    const value = useMemo(()=> currentTime/duration,[currentTime,duration])
+
 
     const [width,setWidth] = useState(0)
 
