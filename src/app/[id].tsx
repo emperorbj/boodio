@@ -1,5 +1,5 @@
 import { View, Text,Pressable,Image } from 'react-native'
-import React from 'react'
+import React,{useEffect} from 'react'
 import Entypo from '@expo/vector-icons/Entypo';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useAudioPlayer,useAudioPlayerStatus } from 'expo-audio';
 import { usePlayer } from '../provider/PlayerProvider';
 import { PlayerTypeProps } from '../../types/data';
+import { supabase } from '../../lib/supabase';
 
 const player = () => {
 

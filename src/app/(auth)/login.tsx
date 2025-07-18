@@ -60,30 +60,6 @@ export default function Login() {
 };
 
 
-
-
-
-
-    // const handleLogin = async () => {
-    //     setLoading(true)
-    //     setError('')
-    //     const { data, error } = await supabase.auth.signInWithPassword({
-    //         email,
-    //         password,
-    //     })
-
-    //      if (error) {
-    //     setError(error.message);
-    //     setLoading(false);
-    //     return;
-    // }
-
-    //     const user = data.user ? { id: data.user.id, email: data.user.email ?? '' } : null
-    //     setUser(user)
-    //     setLoading(false)
-    //     router.replace('/(tabs)/')
-    // }
-
     return (
         <View className='flex-1 justify-center bg-slate-800 items-center p-4'>
             <View className='items-center justify-center w-full mb-5'>
