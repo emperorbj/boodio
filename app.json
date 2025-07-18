@@ -29,11 +29,12 @@
     },
     "plugins": [
       [
-      "expo-router",
-       {
-        "origin": "https://boodio.app"
-      }
-    ]
+        "expo-router",
+        {
+          "origin": "https://boodio.app"
+        }
+      ],
+      "expo-audio"
     ]
   }
 }
