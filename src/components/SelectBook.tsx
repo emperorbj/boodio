@@ -54,7 +54,7 @@ const SelectBook = ({book}: BookListProps ) => {
     if(insertError){
       Toast.show({
         type: 'error',
-        text1: 'Failed to add book',
+        text1: 'Failed to add book', 
         text2: insertError.message,
       });
       return;

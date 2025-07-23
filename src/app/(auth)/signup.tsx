@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View,TextInput,TouchableOpacity,Text,ActivityIndicator } from 'react-native'
+import { View,TextInput,TouchableOpacity,Text,ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native'
 import { supabase } from '../../../lib/supabase'
 import { useRouter } from 'expo-router'
 import {Image} from 'expo-image'
@@ -8,6 +8,7 @@ import { useAuthStore } from '../../../store/useAuthStore'
 export default function Signup() {
 
   const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -44,7 +45,17 @@ const setUser = useAuthStore((state) => state.setUser)
         options: {
         emailRedirectTo: 'boodio://(auth)/login',
     },
-     });
+     })
+     if(data?.user){
+      await supabase.from('profile').insert([
+        {
+          id: data.user.id,
+          email: data.user.email ?? '',
+          name: name,
+        }
+      ])
+     }
+     ;
 
     if (error) {
       setError(error.message);
@@ -81,6 +92,11 @@ const setUser = useAuthStore((state) => state.setUser)
 
 
   return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 80} // Adjust offset for iOS/Android
+    >
     <View className='flex-1 justify-center bg-slate-800 items-center p-4'>
                 <View className='items-center justify-center w-full mb-5'>
                     <Image
@@ -93,6 +109,8 @@ const setUser = useAuthStore((state) => state.setUser)
                 </View>
     
                 <View className='w-full gap-4'>
+                    <TextInput className='bg-slate-600 w-full text-white pl-4 py-5 rounded-md border border-slate-500'
+                        placeholder="Your name" value={name} onChangeText={setName} placeholderTextColor={'white'} />
                     <TextInput className='bg-slate-600 w-full text-white pl-4 py-5 rounded-md border border-slate-500'
                         placeholder="Email" value={email} onChangeText={setEmail} placeholderTextColor={'white'} />
                     <TextInput className='bg-slate-600 w-full text-white pl-4 py-5 rounded-md border border-slate-500'
@@ -114,5 +132,6 @@ const setUser = useAuthStore((state) => state.setUser)
                     </TouchableOpacity>
                 </View>
             </View>
+          </KeyboardAvoidingView>
   )
 }
