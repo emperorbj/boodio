@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import {
   View,
@@ -9,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
+  Modal,
   SafeAreaView,
 } from 'react-native';
 import { LinearGradientProps, LinearGradient } from 'expo-linear-gradient';
@@ -17,11 +16,17 @@ import { AntDesign, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons'
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabase';
 import Toast from 'react-native-toast-message';
+import { useRouter } from 'expo-router';
+import LogoutModal from '../../components/LogOut';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 
 const { width, height } = Dimensions.get('window');
 
 const Profile = () => {
+  const router = useRouter();
+  const [modalVisible, setModalVisible] = useState(false);
+  const {signOut} = useAuthStore() as any;
 
   const fetchUserProfile = async () => {
     const {data,error} = await supabase.auth.getUser();
@@ -96,7 +101,7 @@ const Profile = () => {
             end={{ x: 1, y: 1 }}
           >
             <BlurView intensity={20} className="flex-1 p-5 justify-center items-center">
-              <TouchableOpacity className="absolute top-12 right-5 w-10 h-10 rounded-full bg-black/30 justify-center items-center">
+              <TouchableOpacity onPress={()=> setModalVisible(true)} className="absolute top-12 right-5 w-10 h-10 rounded-full bg-black/30 justify-center items-center">
                 <Feather name="settings" size={24} color="white" />
               </TouchableOpacity>
               
@@ -130,9 +135,7 @@ const Profile = () => {
                   <Feather name="message-circle" size={20} color="#FFA500" />
                 </TouchableOpacity>
                 
-                <TouchableOpacity className="w-12 h-12 rounded-full bg-white/20 justify-center items-center border border-white/30">
-                  <Feather name="share" size={20} color="#FFA500" />
-                </TouchableOpacity>
+               
               </View>
             </BlurView>
           </LinearGradient>
@@ -147,14 +150,16 @@ const Profile = () => {
         <View className="mx-5 mb-8">
           <Text className="text-xl font-bold text-white mb-4">Quick Actions</Text>
           <View className="flex-row flex-wrap justify-between">
-            <TouchableOpacity className="w-[48%] bg-neutral-900 rounded-2xl p-5 items-center mb-4">
+            
+            <TouchableOpacity onPress={()=> router.push("(tabs)/playlist")} className="w-[48%] bg-neutral-900 rounded-2xl p-5 items-center mb-4">
               <View className="w-15 h-15 rounded-full bg-orange-500 justify-center items-center mb-3">
                 <MaterialIcons name="library-music" size={24} color="white" />
               </View>
               <Text className="text-white text-sm font-semibold text-center">My Playlists</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity className="w-[48%] bg-neutral-900 rounded-2xl p-5 items-center mb-4">
+            
+            <TouchableOpacity onPress={()=> router.push("(tabs)/likes")} className="w-[48%] bg-neutral-900 rounded-2xl p-5 items-center mb-4">
               <View className="w-15 h-15 rounded-full bg-red-500 justify-center items-center mb-3">
                 <MaterialIcons name="favorite" size={24} color="white" />
               </View>
@@ -227,6 +232,9 @@ const Profile = () => {
             </View>
           ))}
         </View>
+        <LogoutModal visible={modalVisible} 
+        onClose={()=>setModalVisible(false)}
+        onLogout={signOut} userName={userProfile?.name} />
       </ScrollView>
     </SafeAreaView>
   );

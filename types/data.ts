@@ -48,3 +48,10 @@ export type PlayerTypeProps = {
     book:any;
     setBook:(book:any) => void
 }
+
+export type LogOutModalProps = {
+    visible: boolean;
+    onClose: () => void;
+    onLogout: () => void;
+    userName?: string;
+}
