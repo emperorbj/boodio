@@ -3,6 +3,8 @@ import { supabase } from '../lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User, AuthState } from '../types/data';
 
+// a place for global state management
+
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     setUser: (user) => {
