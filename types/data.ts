@@ -1,4 +1,5 @@
 import { AudioPlayer } from "expo-audio";
+// separated most of the typescript types for clean code
 export type Book = {
     id: string;
     title: string;
