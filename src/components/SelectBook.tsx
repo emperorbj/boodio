@@ -63,6 +63,25 @@ const SelectBook = ({book}: BookListProps ) => {
           type: 'success',
           text1: `${book?.title} Added successfully`,
         });
+
+  const {error:errorActivity} = await supabase.from('recent_activity').insert({
+  user_id: user.id,
+  type: 'liked',
+  details: {
+    book_id: book.id,
+    title: book.title,
+    author: book.author,
+  }
+})
+    if(errorActivity){
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to log activity',
+        text2: errorActivity.message,
+      });
+      return;
+    }
+
   }
 
   const {mutate} = useMutation({

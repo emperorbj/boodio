@@ -4,19 +4,11 @@ import {FlatList, View,Image,ActivityIndicator,Text } from 'react-native';
 import books from '../../dummyBooks';
 import BookList from "../../components/BookList";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../lib/supabase";
+import { fetchBooks } from "../../../services/bookServices";
 
 
 export default function App() {
 
-  const fetchBooks = async () => {
-      const {data,error} = await supabase.from('books').select('*')
-      if(error){
-        throw error
-      }
-      return data
-    
-  }
 
   const {data,isLoading,error} = useQuery({
     queryKey:['books'],

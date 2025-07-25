@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,16 +9,18 @@ import {
   StatusBar,
   Modal,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradientProps, LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { AntDesign, MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../../lib/supabase';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
 import LogoutModal from '../../components/LogOut';
 import { useAuthStore } from '../../../store/useAuthStore';
+import { fetchUserProfile,fetchUserActivity,fetchAchievements,awardAchievements } from '../../../services/bookServices';
 
 
 const { width, height } = Dimensions.get('window');
@@ -27,43 +29,9 @@ const Profile = () => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const {signOut} = useAuthStore() as any;
+  const queryClient = useQueryClient();
 
-  const fetchUserProfile = async () => {
-    const {data,error} = await supabase.auth.getUser();
-    if(!data){
-      Toast.show({
-        type: 'error',
-        text1: 'User not found',
-      });
-      return null;
-    }
-
-    if(error){
-      Toast.show({
-        type: 'error',
-        text1: 'Error fetching user profile',
-        text2: error.message,
-      });
-      return null;
-    }
-
-    const { data: profileData, error: profileError } = await supabase
-      .from('profile')
-      .select('name,email')
-      .eq('id', data.user.id)
-      .maybeSingle();
-
-      if (profileError) {
-        Toast.show({
-          type: 'error',
-          text1: 'Error fetching profile data',
-          text2: profileError.message,
-        });
-        return null;
-      }
-      return profileData;
-
-  }
+  
 
   const { data: userProfile, isLoading, refetch } = useQuery({
     queryKey: ['userProfile'],
@@ -71,21 +39,39 @@ const Profile = () => {
     refetchOnWindowFocus: true,
   });
 
+  const { data: userActivity = [] ,isLoading:activityLoading} : any = useQuery({
+    queryKey: ['userActivity'],
+    queryFn: fetchUserActivity,
+    enabled: !!userProfile,
+  });
+
+  const { mutate: awardAchievementsMutation } = useMutation({
+    mutationFn: awardAchievements,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['achievements'] });
+    },
+  });
+
+
+
+  const { data: NewAchievements = [], isLoading: achievementsLoading } = useQuery({
+    queryKey: ['achievements'],
+    queryFn: fetchAchievements,
+    refetchOnWindowFocus: true,
+
+  });
+
+  useEffect(() => {
+    if (!achievementsLoading && NewAchievements) {
+      awardAchievementsMutation();
+    }
+  }, [achievementsLoading, NewAchievements, awardAchievementsMutation]);
+
 
 
   const [following, setFollowing] = useState(false);
 
-  const recentActivity = [
-    { type: 'liked', song: 'Blinding Lights', artist: 'The Weeknd', time: '2h ago' },
-    { type: 'playlist', name: 'Chill Vibes', count: '23 songs', time: '1d ago' },
-    { type: 'liked', song: 'Watermelon Sugar', artist: 'Harry Styles', time: '2d ago' },
-  ];
 
-  const achievements:any = [
-    { icon: 'musical-notes', title: 'Music Lover', desc: 'Listened to 1000+ songs' },
-    { icon: 'time-outline', title: 'Night Owl', desc: 'Most active after midnight' },
-    { icon: 'trophy-outline', title: 'Trendsetter', desc: 'First to discover 50 artists' },
-  ];
 
   return (
     <SafeAreaView className="flex-1 bg-black">
@@ -191,7 +177,19 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
           
-          {recentActivity.map((activity, index) => (
+          { activityLoading ? (
+            <View className="flex-1 items-center justify-center">
+               <ActivityIndicator size="large" color="#FFA500" />
+            </View>
+          )
+          :
+          userActivity.length === 0 
+          ? 
+          (
+            <Text className="text-orange-500 text-sm">No activities yet</Text>
+          ) 
+          :
+          userActivity.map((activity:any, index:number) => (
             <TouchableOpacity key={index} className="flex-row items-center bg-neutral-900 rounded-xl p-4 mb-3">
               <View className="w-10 h-10 rounded-full bg-neutral-800 justify-center items-center mr-4">
                 {activity.type === 'liked' ? (
@@ -203,11 +201,11 @@ const Profile = () => {
               <View className="flex-1">
                 <Text className="text-white text-sm mb-1">
                   {activity.type === 'liked' 
-                    ? `Liked "${activity.song}" by ${activity.artist}`
-                    : `Created playlist "${activity.name}" with ${activity.count}`
+                    ? `Liked "${activity?.details?.title}" by ${activity?.details?.author}`
+                    : `Created playlist "${activity?.details?.author}"`
                   }
                 </Text>
-                <Text className="text-white/50 text-xs">{activity.time}</Text>
+                <Text className="text-white/50 text-xs">{new Date(activity?.created_at).toLocaleString()}</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -217,20 +215,34 @@ const Profile = () => {
         <View className="mx-5 mb-28">
           <Text className="text-xl font-bold text-white mb-4">Achievements</Text>
           
-          {achievements.map((achievement:any, index:number) => (
+          { achievementsLoading ? (
+            <View className="flex-1 items-center justify-center">
+               <ActivityIndicator size="large" color="#FFA500" />
+            </View>
+          )
+          :
+          
+          NewAchievements.length === 0 ? (
+            <Text className="text-orange-500 text-sm">No achievements yet</Text>
+          )
+          :
+          
+          NewAchievements.map((achievement:any, index:number) => (
             <View key={index} className="flex-row items-center bg-neutral-900 rounded-xl p-4 mb-3">
               <View className="w-12 h-12 rounded-full bg-neutral-800 justify-center items-center mr-4">
                 <Ionicons name={achievement.icon} size={24} color="#FFA500" />
               </View>
               <View className="flex-1">
                 <Text className="text-white text-base font-semibold mb-1">{achievement.title}</Text>
-                <Text className="text-white/70 text-sm">{achievement.desc}</Text>
+                <Text className="text-white/70 text-sm">{achievement.description}</Text>
               </View>
               <View className="ml-3">
                 <MaterialIcons name="verified" size={20} color="#FFA500" />
               </View>
             </View>
-          ))}
+          ))
+          
+        }
         </View>
         <LogoutModal visible={modalVisible} 
         onClose={()=>setModalVisible(false)}

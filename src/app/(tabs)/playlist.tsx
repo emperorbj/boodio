@@ -1,22 +1,12 @@
 import "../../../global.css"
 import { StatusBar } from 'expo-status-bar';
 import {FlatList, View,Image,ActivityIndicator,Text } from 'react-native';
-import books from '../../dummyBooks';
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../lib/supabase";
 import SelectBook from "../../components/SelectBook";
+import { fetchBooks } from "../../../services/bookServices";
 
 
 export default function  PlayList() {
-
-  const fetchBooks = async () => {
-      const {data,error} = await supabase.from('books').select('*')
-      if(error){
-        throw error
-      }
-      return data
-    
-  }
 
   const {data,isLoading,error} = useQuery({
     queryKey:['books'],

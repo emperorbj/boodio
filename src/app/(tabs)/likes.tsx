@@ -5,25 +5,16 @@ import { supabase } from '../../../lib/supabase'
 import FavoriteBooksList from '../../components/FavoriteList'
 import { StatusBar } from 'expo-status-bar'
 import { useFocusEffect } from 'expo-router'
+import { fetchLikes } from '../../../services/bookServices'
 
 
-
-const   likes = () => {
+const likes = () => {
 
   useFocusEffect(
   useCallback(() => {
     refetch();
   }, [])
 );
-
-  const fetchLikes = async () => {
-    const {data,error} = await supabase.from('library').select('*,books(*)')
-    if(error){
-      throw error
-    }
-    
-    return data
-  }
 
   const {data,isLoading,error,refetch} = useQuery({
     queryKey:['likes'],
