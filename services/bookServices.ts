@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import Toast from 'react-native-toast-message';
-
+// These are all the logics for CRUD operations on supabase
 export const fetchBooks = async () => {
     const { data, error } = await supabase.from('books').select('*');
     if (error) {
